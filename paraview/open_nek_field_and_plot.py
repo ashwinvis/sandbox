@@ -5,7 +5,7 @@
 from vtk.numpy_interface import dataset_adapter as dsa
 from vtk.util.numpy_support import vtk_to_numpy
 import numpy as np
-from vtktools import vtkio
+# from vtktools import vtkio
 # from vtk.numpy_interface import algorithms as algs
 # from paraview.servermanager import *
 # import the simple module from the paraview
