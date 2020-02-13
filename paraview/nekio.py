@@ -85,6 +85,10 @@ class NekReader:
         # Properties modified on timeKeeper1
         self.timeKeeper1.Time = value
 
+    @property
+    def timesteps(self):
+        return self.timeKeeper1.TimestepValues
+
     @cached_property
     def renderView1(self):
         """Get active view."""
@@ -241,16 +245,17 @@ class Dataset:
             # For example 0, 1, 2, 3, (jump!) 0, 1, 2, 3
             inds_jumps = np.where(pts[:-1, ax0] > pts[1:, ax0])[0]
             # print(inds_jumps)
-            n0 = inds_jumps[1] - inds_jumps[0]
-            n0_avg = np.diff(inds_jumps).mean()
+            n1 = inds_jumps[1] - inds_jumps[0]
+            n1_avg = np.diff(inds_jumps).mean()
             assert (
-                n0 == n0_avg
+                n1 == n1_avg
             ), f"{n0}!={n0_avg}, i.e. inhomogenieties found, reshaping may not be possible"
 
-            n0 = int(n0)
-            n1 = pts.shape[0] / n0
-            assert n1.is_integer()
             n1 = int(n1)
+
+            n0 = pts.shape[0] / n1
+            assert n0.is_integer()
+            n0 = int(n0)
 
             # Look where the first value repeats
             # -----------------------------------
@@ -258,16 +263,45 @@ class Dataset:
             # n0 = pts.shape[0] / n1
             # assert n0.is_integer()
             # n0 = int(n0)
-            return n1, n0
+            return n0, n1
 
         x, y, z = coords.T
         if reshape:
             n0, n1 = get_n0_n1(coords)
-            reshape_func = lambda arr: arr.reshape(n0, n1)
-            return *map(reshape_func, (x, y, z)), inds
+            axes = [self.reshape(ax, shape=(n0, n1)) for ax in (x, y, z)]
+            return *axes, inds
         else:
             return x, y, z, inds
 
+    def reshape(self, arr, shape):
+        n0, n1 = shape
+        # TODO: Find out why half the points appear in the beginning
+        n_skip = n1 // 2
+        return arr[n_skip:-n_skip].reshape(n0-1, n1)
+
+    def plot_contours(self, key, normal=1, interpolate=True, ax=None, **kwargs):
+        # No sorting and reshaping is required if interpolation is allowed
+        sort_reshape = not interpolate
+        x, y, z, inds = self.get_coords(normal, sort_reshape, sort_reshape)
+        field = self.get_array(key)
+
+        import matplotlib.pyplot as plt
+        if not ax:
+            ax = plt
+
+        if normal == 0:
+            x0, x1 = y, z
+        elif normal == 1:
+            x0, x1 = x, z
+        elif normal == 2:
+            x0, x1 = x, y
+
+        if interpolate:
+            ax.tricontourf(x0, x1, field, **kwargs)
+        else:
+            field = field[inds].reshape(x0.shape)
+            print(field.shape, x0.shape)
+            ax.contourf(x0, x1, field, **kwargs)
 
 if __name__ in ("__main__", "__vtkconsole__"):
     reader = NekReader(
