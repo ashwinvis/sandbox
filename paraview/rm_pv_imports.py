@@ -46,7 +46,7 @@ def rm_pv_imports(script):
     with open(script + ".orig", "r") as fp, open(script, "w") as new_fp:
         for line in fp.readlines():
             if not line.startswith("#"):
-                if line == "from paraview.simple import *":
+                if line.strip() == "from paraview.simple import *":
                     line = "import paraview.simple as pv"
                 else:
                     line = fix_line(line, imports)

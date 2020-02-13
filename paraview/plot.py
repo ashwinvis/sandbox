@@ -1,23 +1,23 @@
 # trace generated using paraview version 5.7.0
 #
-# To ensure correct image size when batch processing, please search 
+# To ensure correct image size when batch processing, please search
 # for and uncomment the line `# renderView*.ViewSize = [*,*]`
 
 #### import the simple module from the paraview
-from paraview.simple import *
+import paraview.simple as pv
 #### disable automatic camera reset on 'Show'
-paraview.simple._DisableFirstRenderCameraReset()
+pv._DisableFirstRenderCameraReset()
 
 # create a new 'VisItNek5000Reader'
-ablnek5000 = VisItNek5000Reader(FileName='/run/media/avmo/seagate/runs/abl_irrot_15x24x10_V1pix1.x1.571_2020-02-05_12-02-28/abl.nek5000')
+ablnek5000 = pv.VisItNek5000Reader(FileName='/run/media/avmo/seagate/runs/abl_irrot_15x24x10_V1pix1.x1.571_2020-02-05_12-02-28/abl.nek5000')
 ablnek5000.Meshes = ['mesh']
 ablnek5000.PointArrays = []
 
 # get animation scene
-animationScene1 = GetAnimationScene()
+animationScene1 = pv.GetAnimationScene()
 
 # get the time-keeper
-timeKeeper1 = GetTimeKeeper()
+timeKeeper1 = pv.GetTimeKeeper()
 
 # update animation scene based on data timesteps
 animationScene1.UpdateAnimationUsingDataTimeSteps()
@@ -26,12 +26,12 @@ animationScene1.UpdateAnimationUsingDataTimeSteps()
 ablnek5000.PointArrays = ['velocity_mag']
 
 # get active view
-renderView1 = GetActiveViewOrCreate('RenderView')
+renderView1 = pv.GetActiveViewOrCreate('RenderView')
 # uncomment following to set a specific view size
 # renderView1.ViewSize = [1600, 499]
 
 # show data in view
-ablnek5000Display = Show(ablnek5000, renderView1)
+ablnek5000Display = pv.Show(ablnek5000, renderView1)
 
 # trace defaults for the display properties.
 ablnek5000Display.Representation = 'Surface'
@@ -63,13 +63,13 @@ ablnek5000Display.OpacityTransferFunction.Points = [0.0010371223324909806, 0.0, 
 renderView1.ResetCamera()
 
 # get the material library
-materialLibrary1 = GetMaterialLibrary()
+materialLibrary1 = pv.GetMaterialLibrary()
 
 # update the view to ensure updated data information
 renderView1.Update()
 
 # set scalar coloring
-ColorBy(ablnek5000Display, ('POINTS', 'velocity_mag'))
+pv.ColorBy(ablnek5000Display, ('POINTS', 'velocity_mag'))
 
 # rescale color and/or opacity maps used to include current data range
 ablnek5000Display.RescaleTransferFunctionToDataRange(True, False)
@@ -78,12 +78,12 @@ ablnek5000Display.RescaleTransferFunctionToDataRange(True, False)
 ablnek5000Display.SetScalarBarVisibility(renderView1, True)
 
 # get color transfer function/color map for 'velocity_mag'
-velocity_magLUT = GetColorTransferFunction('velocity_mag')
+velocity_magLUT = pv.GetColorTransferFunction('velocity_mag')
 velocity_magLUT.RGBPoints = [0.0010371223324909806, 0.231373, 0.298039, 0.752941, 0.7069325454649515, 0.865003, 0.865003, 0.865003, 1.412827968597412, 0.705882, 0.0156863, 0.14902]
 velocity_magLUT.ScalarRangeInitialized = 1.0
 
 # get opacity transfer function/opacity map for 'velocity_mag'
-velocity_magPWF = GetOpacityTransferFunction('velocity_mag')
+velocity_magPWF = pv.GetOpacityTransferFunction('velocity_mag')
 velocity_magPWF.Points = [0.0010371223324909806, 0.0, 0.5, 0.0, 1.412827968597412, 1.0, 0.5, 0.0]
 velocity_magPWF.ScalarRangeInitialized = 1
 
@@ -91,7 +91,7 @@ velocity_magPWF.ScalarRangeInitialized = 1
 velocity_magLUT.ApplyPreset('Inferno (matplotlib)', True)
 
 # get color legend/bar for velocity_magLUT in view renderView1
-velocity_magLUTColorBar = GetScalarBar(velocity_magLUT, renderView1)
+velocity_magLUTColorBar = pv.GetScalarBar(velocity_magLUT, renderView1)
 velocity_magLUTColorBar.Title = 'velocity_mag'
 velocity_magLUTColorBar.ComponentTitle = ''
 
@@ -161,7 +161,7 @@ renderView1.CameraFocalPoint = [1.5707999467849731, 0.5, 0.7853999733924866]
 renderView1.CameraParallelScale = 1.8259971497854517
 
 # save animation
-SaveAnimation('/home/avmo/anim.avi', renderView1, ImageResolution=[1600, 496],
+pv.SaveAnimation('/home/avmo/anim.avi', renderView1, ImageResolution=[1600, 496],
     FrameWindow=[0, 35])
 
 # current camera placement for renderView1
@@ -170,20 +170,20 @@ renderView1.CameraFocalPoint = [1.5707999467849731, 0.5, 0.7853999733924866]
 renderView1.CameraParallelScale = 1.8259971497854517
 
 # save screenshot
-SaveScreenshot('/home/avmo/test.png', renderView1, ImageResolution=[1600, 499],
+pv.SaveScreenshot('/home/avmo/test.png', renderView1, ImageResolution=[1600, 499],
     OverrideColorPalette='WhiteBackground')
 
 # create a new 'Contour'
-contour1 = Contour(Input=ablnek5000)
+contour1 = pv.Contour(Input=ablnek5000)
 contour1.ContourBy = ['POINTS', 'velocity_mag']
 contour1.Isosurfaces = [0.5744097200222313]
 contour1.PointMergeMethod = 'Uniform Binning'
 
 # set active source
-SetActiveSource(contour1)
+pv.SetActiveSource(contour1)
 
 # show data in view
-contour1Display = Show(contour1, renderView1)
+contour1Display = pv.Show(contour1, renderView1)
 
 # trace defaults for the display properties.
 contour1Display.Representation = 'Surface'
@@ -214,16 +214,16 @@ contour1Display.OpacityTransferFunction.Points = [0.5744097232818604, 0.0, 0.5, 
 contour1Display.SetScalarBarVisibility(renderView1, True)
 
 # set active source
-SetActiveSource(contour1)
+pv.SetActiveSource(contour1)
 
 # Properties modified on contour1
 contour1.Isosurfaces = [0.5744097200222313, 0.6, 0.7]
 
 # show data in view
-contour1Display = Show(contour1, renderView1)
+contour1Display = pv.Show(contour1, renderView1)
 
 # hide data in view
-Hide(ablnek5000, renderView1)
+pv.Hide(ablnek5000, renderView1)
 
 # show color bar/color legend
 contour1Display.SetScalarBarVisibility(renderView1, True)

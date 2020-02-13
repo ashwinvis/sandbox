@@ -9,13 +9,15 @@ from vtktools import vtkio
 # from vtk.numpy_interface import algorithms as algs
 # from paraview.servermanager import *
 # import the simple module from the paraview
-from paraview.simple import *
+import paraview.simple as pv
 # disable automatic camera reset on 'Show'
-# paraview.simple._DisableFirstRenderCameraReset()
+pv._DisableFirstRenderCameraReset()
 
 # create a new 'VisItNek5000Reader'
 ablnek5000 = pv.VisItNek5000Reader(
-    FileName='/run/media/avmo/seagate/runs/abl_irrot_15x24x10_V1pix1.x1.571_2020-02-05_12-02-28/abl.nek5000')
+    # FileName='/run/media/avmo/seagate/runs/abl_irrot_15x24x10_V1pix1.x1.571_2020-02-05_12-02-28/abl.nek5000'
+    FileName='/home/avmo/src/exabl/data/abl_irrot_15x24x10_V1pix1.x1.571_2020-02-05_12-02-28/abl.nek5000'
+)
 ablnek5000.Meshes = ['mesh']
 ablnek5000.PointArrays = []
 
