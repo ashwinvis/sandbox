@@ -211,7 +211,7 @@ class Dataset:
         return array.reshape(shape) if shape else array
 
     def get_coords(self, normal=1, sort=True, reshape=False):
-        """Get row major sorted and reshaped coordinates.
+        """Get row major sorted and reshaped coordinates for a slice.
 
         :param int normal: Axis normal to the slice
         :param bool sort: Sort the coordinate array or not
@@ -226,7 +226,7 @@ class Dataset:
             """Sorts indices using a weighting function."""
             pts = np.copy(pts)
 
-            # weighting_func = lambda x0, x1: x0 * 1e4 + x1
+            # weighting_func = lambda x0, x1: x0 + x1 * 1e4
             # inds = np.argsort(weighting_func(pts[:, ax0], pts[:, ax1]))
             inds = np.lexsort([pts[:, ax] for ax in range(3)])
             return inds
@@ -249,7 +249,7 @@ class Dataset:
             n1_avg = np.diff(inds_jumps).mean()
             assert (
                 n1 == n1_avg
-            ), f"{n0}!={n0_avg}, i.e. inhomogenieties found, reshaping may not be possible"
+            ), f"{n1}!={n1_avg}, i.e. inhomogenieties found, reshaping may not be possible"
 
             n1 = int(n1)
 
@@ -257,27 +257,41 @@ class Dataset:
             assert n0.is_integer()
             n0 = int(n0)
 
-            # Look where the first value repeats
-            # -----------------------------------
-            # n1 = np.where(pts[:, ax1] == pts[0, ax1])[0].size
-            # n0 = pts.shape[0] / n1
-            # assert n0.is_integer()
-            # n0 = int(n0)
-            return n0, n1
+            return n0 + 1, n1
 
         x, y, z = coords.T
         if reshape:
             n0, n1 = get_n0_n1(coords)
             axes = [self.reshape(ax, shape=(n0, n1)) for ax in (x, y, z)]
-            return *axes, inds
+            return (*axes, inds)
         else:
             return x, y, z, inds
 
     def reshape(self, arr, shape):
+        """Reshape 1D arrays into 2D arrays while also handling boundaries.
+
+        :param arr: Array to be reshaped
+        :param tuple(int) shape: Shape of the output array
+
+
+        """
         n0, n1 = shape
-        # TODO: Find out why half the points appear in the beginning
-        n_skip = n1 // 2
-        return arr[n_skip:-n_skip].reshape(n0-1, n1)
+        n0 -= 2
+        n_bound = n1 // 2
+        inner = arr[n_bound:-n_bound].reshape(n0, n1)
+
+        def repeat(values):
+            """Repeat an array like [0, 1, 2] -> [0, 0, 1, 1, 2, 2]"""
+            n = values.size * 2
+            values2 = np.empty((1, n), dtype=values.dtype)
+            values2[0, ::2] = values
+            values2[0, 1::2] = values
+            return values2
+
+        left_boundary = repeat(arr[:n_bound])
+        right_boundary = repeat(arr[-n_bound:])
+
+        return np.vstack((left_boundary, inner, right_boundary))
 
     def plot_contours(self, key, normal=1, interpolate=True, ax=None, **kwargs):
         # No sorting and reshaping is required if interpolation is allowed
@@ -286,6 +300,7 @@ class Dataset:
         field = self.get_array(key)
 
         import matplotlib.pyplot as plt
+
         if not ax:
             ax = plt
 
@@ -299,9 +314,11 @@ class Dataset:
         if interpolate:
             ax.tricontourf(x0, x1, field, **kwargs)
         else:
-            field = field[inds].reshape(x0.shape)
-            print(field.shape, x0.shape)
+            #  field = field[inds].reshape(x0.shape)
+            field = self.reshape(field[inds], shape=x0.shape)
+            # print(field.shape, x0.shape)
             ax.contourf(x0, x1, field, **kwargs)
+
 
 if __name__ in ("__main__", "__vtkconsole__"):
     reader = NekReader(
@@ -315,10 +332,10 @@ if __name__ in ("__main__", "__vtkconsole__"):
     # next(reader)
 
     # reader.render()
-    for (time,) in reader:
-        # reader.show("velocity_mag")
-        print(time)
-        break
+    #  for (time,) in reader:
+    #      # reader.show("velocity_mag")
+    #      print(time)
+    #      break
 
     # reader.render()
     slice_data = reader.get_slice(y=0.1)
@@ -330,3 +347,24 @@ if __name__ in ("__main__", "__vtkconsole__"):
     print(coords, coords.shape)
     x, y, z = coords.T
     print(x.shape)
+
+
+    import matplotlib.pyplot as plt
+
+    # plt.ion()
+    reader.time = reader.timesteps[-5]
+    fig, axes = plt.subplots(2, sharex=True)
+    ax1, ax2 = axes.ravel()
+    for ts, in reader:
+        reader.apply()
+        print("time =", ts)
+        slice_data = reader.get_slice(y=0.1)
+
+        ax1.set_title("interpolated")
+        slice_data.plot_contours("velocity_mag", interpolate=True, ax=ax1)
+        ax2.set_title(f"actual, time={ts}")
+        slice_data.plot_contours("velocity_mag", interpolate=False, ax=ax2)
+        plt.pause(0.2)
+
+    plt.show()
+
