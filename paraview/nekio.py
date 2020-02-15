@@ -57,6 +57,7 @@ class NekReader:
         self.animationScene1.UpdateAnimationUsingDataTimeSteps()
 
         # Properties modified on ablnek5000
+        assert isinstance(arrays, (list, tuple))
         nek5000.PointArrays = list(arrays)
 
         data_info = nek5000.GetDataInformation()
@@ -67,9 +68,11 @@ class NekReader:
 
     def __next__(self):
         """Iterate through time"""
-        if self.time == max(self.timeKeeper1.TimestepValues):
+        if self.time == self.animationScene1.EndTime:
             raise StopIteration
+
         self.animationScene1.GoToNext()
+        self.animationScene1.AnimationTime = self.time
 
         # Return lightweight metadata as a tuple
         return (self.time,)
@@ -130,8 +133,11 @@ class NekReader:
 
         pv.SetActiveSource(source)
 
-        LUT = pv.GetColorTransferFunction(key_array)
-        PWF = pv.GetOpacityTransferFunction(key_array)
+        try:
+            LUT = pv.GetColorTransferFunction(key_array)
+            PWF = pv.GetOpacityTransferFunction(key_array)
+        except AttributeError:
+            pass
 
         return display
 
@@ -149,15 +155,13 @@ class NekReader:
         slice1.SliceOffsetValues = [0.0]
         slice1.SliceType.Origin = [x, y, z]
         slice1.SliceType.Normal = list(normal)
-        slice1.Triangulatetheslice = 0
+        # slice1.Triangulatetheslice = 0
 
-        # vtkCommonDataModelPython.vtkMultiBlockDataSet
-        dset = pv.servermanager.Fetch(slice1)
         # slice_data = vtkio.getBlockByName(mb_dset, 'mesh')
 
-        pv.SetActiveSource(slice1)
+        # pv.SetActiveSource(slice1)
 
-        return Dataset(dset)
+        return NekSlice(slice1)
         # return pyvista.wrap(dobj)
 
 
@@ -170,16 +174,20 @@ class StatsReader(NekReader):
         super().__init__(filename, arrays)
 
     def calculate(self, name="u_prime", func="s1_average - s1"):
-        calculator1 = pv.Calculator(Input=self.groupDatasets1)
+        calculator1 = pv.Calculator(Input=self.groupNekSlices1)
         calculator1.ResultArrayName = name
         calculator1.Function = func
         return calculator1
 
 
-class Dataset:
+class NekSlice:
     """Convenience wrapper to easily access arrays stored in a VTK dataset."""
 
-    def __init__(self, dset):
+    def __init__(self, slice1):
+        self._slice = slice1
+        # vtkCommonDataModelPython.vtkMultiBlockDataSet
+        dset = pv.servermanager.Fetch(slice1)
+
         if dset.GetClassName() not in ("vtkMultiBlockDataSet",):
             raise ValueError(f"Incompatible type: {type(dset)}")
 
@@ -205,16 +213,17 @@ class Dataset:
         nb_blocks = self._dset.GetNumberOfBlocks()
         return (self._dset.GetBlock(idx) for idx in range(nb_blocks))
 
-    def get_array(self, key, shape=None):
+    def get_array(self, key):
         vtk_array = self[key].Arrays[0]
         array = vtk_to_numpy(vtk_array)
-        return array.reshape(shape) if shape else array
+        return array
 
-    def get_coords(self, normal=1, sort=True, reshape=False):
+    def get_coords(self, normal=1, sort=True, reshape=True):
         """Get row major sorted and reshaped coordinates for a slice.
 
         :param int normal: Axis normal to the slice
         :param bool sort: Sort the coordinate array or not
+        :param bool reshape: Reshape the coordinates into 2D array or not.
 
         """
         coords = self.get_array("coords")
@@ -321,6 +330,7 @@ class Dataset:
 
 
 if __name__ in ("__main__", "__vtkconsole__"):
+    paraview.simple._DisableFirstRenderCameraReset()
     reader = NekReader(
         # filename='/run/media/avmo/seagate/runs/abl_irrot_15x24x10_V1pix1.x1.571_2020-02-05_12-02-28/abl.nek5000'
         # filename='/home/avmo/src/exabl/data/abl_irrot_15x24x10_V1pix1.x1.571_2020-02-05_12-02-28/abl.nek5000'
@@ -339,8 +349,6 @@ if __name__ in ("__main__", "__vtkconsole__"):
 
     # reader.render()
     slice_data = reader.get_slice(y=0.1)
-    #  print(slice_data._obj.Points)
-    #  print(slice_data["coords"])
     velocity_mag = slice_data.get_array("velocity_mag")
     print(velocity_mag, velocity_mag.shape)
     coords = slice_data.get_array("coords")
@@ -348,23 +356,37 @@ if __name__ in ("__main__", "__vtkconsole__"):
     x, y, z = coords.T
     print(x.shape)
 
-
     import matplotlib.pyplot as plt
+
+    renderView1 = reader.renderView1
+    renderView1.CameraPosition = [1.5430590649448526, 6.463304979594418, 4.555389168383411]
+    renderView1.CameraFocalPoint = [1.5707999467849734, 0.5, 0.7853999733924866]
+    renderView1.CameraViewUp = [0.018053943395482774, 0.5343398685402572, -0.8450768959190954]
+    renderView1.CameraParallelScale = 1.8259971497854517
 
     # plt.ion()
     reader.time = reader.timesteps[-5]
     fig, axes = plt.subplots(2, sharex=True)
     ax1, ax2 = axes.ravel()
     for ts, in reader:
-        reader.apply()
         print("time =", ts)
+        # renderView1.Update()
         slice_data = reader.get_slice(y=0.1)
 
         ax1.set_title("interpolated")
         slice_data.plot_contours("velocity_mag", interpolate=True, ax=ax1)
         ax2.set_title(f"actual, time={ts}")
+        plt.title(f"time={ts}")
         slice_data.plot_contours("velocity_mag", interpolate=False, ax=ax2)
+
+        # NOTE: Very important to execute reader.show / pv.Show, without which the animation
+        # scene is not updated.
+        display = reader.show("velocity_mag", slice_data._slice)
+        # display = pv.Show(slice_data._slice, renderView1)
+        # pv.ColorBy(display, ('POINTS', "velocity_mag"))
+
+        # reader.render()
+        # reader.apply()
         plt.pause(0.2)
 
-    plt.show()
-
+    plt.pause(1.0)
