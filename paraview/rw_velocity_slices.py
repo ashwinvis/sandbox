@@ -36,7 +36,7 @@ def mk_data():
     x, _, z, inds = s.get_coords(normal=1, reshape=True)
     ds = xr.Dataset(
         coords={
-            "t": reader.timesteps[ts_idx:],
+            "t": reader.timesteps[ts_idx + 1:],
             "y": ys,
             #  "x": np.unique(x),
             #  "z": np.unique(z),
@@ -85,9 +85,8 @@ for t, in reader:
         #  1 / 0
 
         #  plt.pause(0.2)
-    ds.to_netcdf(f'velocity_slices_t{t:.2f}.nc', engine="h5netcdf")
+    ds.to_netcdf(f'velocity_slices.nc', mode="a", engine="h5netcdf")
 
-ds.to_netcdf('velocity_slices_full.nc', engine="h5netcdf")
 print(ds)
 
 
