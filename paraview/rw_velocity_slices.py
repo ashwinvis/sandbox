@@ -2,7 +2,7 @@ from bisect import bisect
 from pathlib import Path
 
 import numpy as np
-import matplotlib.pyplot as plt
+#  import matplotlib.pyplot as plt
 import xarray as xr
 from nekio import NekReader
 
@@ -18,14 +18,16 @@ print(key_arrays)
 reader = NekReader(filename, arrays=key_arrays)
 
 # Time
-ts_start = 20  # approx
+ts_start = 1  # approx
 ts_idx = bisect(reader.timesteps, ts_start) - 1
 reader.time = reader.timesteps[ts_idx]
 
 # Wall normal: y
 vert = reader.get_slice(x=0.1, normal=(1, 0, 0))
 _, ys, _, _ = vert.get_coords(normal=0, reshape=False)
-ys = np.unique(ys)[1::80]
+ys = np.unique(ys)
+#  ys = ys[1::80]
+ys = np.hstack((ys[1:15], ys[15:100:20], ys[100::50]))
 print("ys =", ys)
 
 
@@ -64,25 +66,28 @@ def get_data(slice1, t, y):
     return ds
 
 
-print("Consolidating data...")
-reader.time = reader.timesteps[ts_idx-1]
+reader.time = reader.timesteps[ts_idx]
 ds = mk_data()
+print(ds)
+print("Consolidating data...")
 
 for t, in reader:
+    display = reader.show(key_arrays[0])
     for y in ys:
-        print("t =", t, "y =", y)
+        print("t =", t, "y =", y, end=" ")
         s = reader.get_slice(y=y)
-        display = reader.show(key_arrays[0], s._slice)
-        s.plot_contours("x_velocity")
+        # s.plot_contours("x_velocity")
 
         ds1 = get_data(s, t, y)
-        # print(ds1)
+        print("ux_max =", float(ds1.x_velocity.max()))
         ds = ds.merge(ds1)
         # Quick exit
         #  1 / 0
 
         #  plt.pause(0.2)
+    ds.to_netcdf(f'velocity_slices_t{t:.2f}.nc', engine="h5netcdf")
+
+ds.to_netcdf('velocity_slices_full.nc', engine="h5netcdf")
 print(ds)
 
-ds.to_netcdf('velocity_slices.nc', engine="h5netcdf")
 
