@@ -44,7 +44,7 @@ class NekReader:
         self.filename = filename
         assert Path(filename).exists()
 
-        self.nek5000 = nek5000 = pv.VisItNek5000Reader(FileName=filename)
+        self.nek5000 = nek5000 = pv.VisItNek5000Reader(FileName=str(filename))
         nek5000.Meshes = ["mesh"]
 
         # get animation scene
@@ -174,7 +174,7 @@ class StatsReader(NekReader):
         super().__init__(filename, arrays)
 
     def calculate(self, name="u_prime", func="s1_average - s1"):
-        calculator1 = pv.Calculator(Input=self.groupNekSlices1)
+        calculator1 = pv.Calculator(Input=self.groupDatasets1)
         calculator1.ResultArrayName = name
         calculator1.Function = func
         return calculator1
