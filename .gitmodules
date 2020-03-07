@@ -1,0 +1,6 @@
+[submodule "interface/ctypes-demo"]
+	path = interface/ctypes-demo
+	url = https://bitbucket.org/chris_richardson/ctypes-demo
+[submodule "interface/mma"]
+	path = interface/mma
+	url = https://github.com/coderefinery/mma
