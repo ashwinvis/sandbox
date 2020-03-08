@@ -1,10 +1,13 @@
 lib := 6_dynamic
+build := build
 
-all: clean
-	@cd build/ && meson ../$(lib) && ninja
-	@echo "-------------------------------"
+all:
+	@printf '\n============================ Step 1: Meson ==================================\n'
+	@meson setup $(build) $(lib)
+	@printf '\n============================ Step 2: Ninja ==================================\n'
+	@ninja -C $(build) -v
+	@printf '\n========================= Step 3: Python CFFI ===============================\n'
 	@python $(lib).py
 
 clean:
-	@rm -rf build
-	@mkdir -p build
+	@rm -rf $(build)

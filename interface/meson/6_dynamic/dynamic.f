@@ -1,5 +1,4 @@
-      subroutine hello()  bind(C)
-        use iso_c_binding
+      subroutine hello
         implicit none
         print *, "Hello from shared library."
       end subroutine
