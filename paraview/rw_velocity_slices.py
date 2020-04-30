@@ -9,7 +9,8 @@ from nekio import NekReader
 
 scratch = Path("/run/media/avmo/Scratch/data")
 filename = (
-    scratch / "abl_rot_30x48x20_V1pix1.x1.571_2020-02-09_17-40-03/abl.nek5000"
+    # scratch / "abl_rot_30x48x20_V1pix1.x1.571_2020-02-09_17-40-03/abl.nek5000"
+    scratch / "abl_rot_30x48x20_V1pix1.x1.571_2020-04-10_03-50-27/abl.nek5000"
 )
 assert filename.exists()
 
@@ -18,7 +19,7 @@ print(key_arrays)
 reader = NekReader(filename, arrays=key_arrays)
 
 # Time
-ts_start = 1  # approx
+ts_start = 15  # approx
 ts_idx = bisect(reader.timesteps, ts_start) - 1
 reader.time = reader.timesteps[ts_idx]
 
@@ -26,8 +27,10 @@ reader.time = reader.timesteps[ts_idx]
 vert = reader.get_slice(x=0.1, normal=(1, 0, 0))
 _, ys, _, _ = vert.get_coords(normal=0, reshape=False)
 ys = np.unique(ys)
-#  ys = ys[1::80]
-ys = np.hstack((ys[1:15], ys[15:100:20], ys[100::50]))
+# ys = ys[1::80]
+ys = np.hstack((ys[0:15], ys[15:100:20], ys[100::50]))
+# ys = ys[:30];
+ys[0] = 1e-14
 print("ys =", ys)
 
 
@@ -85,7 +88,7 @@ for t, in reader:
         #  1 / 0
 
         #  plt.pause(0.2)
-    ds.to_netcdf(f'velocity_slices.nc', mode="a", engine="h5netcdf")
+    ds.to_netcdf(f'velocity_slices_for_div_check.nc', mode="a", engine="h5netcdf")
 
 print(ds)
 
