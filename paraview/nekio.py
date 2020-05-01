@@ -74,6 +74,10 @@ class NekReader:
         self.animationScene1.GoToNext()
         self.animationScene1.AnimationTime = self.time
 
+        #  self.animationScene1.UpdateAnimationUsingDataTimeSteps = self.time
+        #  pv.UpdatePipeline(self.time)
+        self.apply()
+
         # Return lightweight metadata as a tuple
         return (self.time,)
 
@@ -83,10 +87,12 @@ class NekReader:
 
     @time.setter
     def time(self, value):
+        """Seek a new time step and update pipeline."""
         # Properties modified on animationScene1
         self.animationScene1.AnimationTime = value
         # Properties modified on timeKeeper1
         self.timeKeeper1.Time = value
+        self.apply()
 
     @property
     def timesteps(self):
@@ -142,7 +148,8 @@ class NekReader:
         return display
 
     def apply(self):
-        pv.UpdatePipeline()
+        """Update pipeline with current timestep."""
+        pv.UpdatePipeline(self.time)
 
     def render(self):
         renderView1 = self.renderView1

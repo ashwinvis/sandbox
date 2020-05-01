@@ -28,8 +28,8 @@ vert = reader.get_slice(x=0.1, normal=(1, 0, 0))
 _, ys, _, _ = vert.get_coords(normal=0, reshape=False)
 ys = np.unique(ys)
 # ys = ys[1::80]
-ys = np.hstack((ys[0:15], ys[15:100:20], ys[100::50]))
-# ys = ys[:30];
+#  ys = np.hstack((ys[0:15], ys[15:100:20], ys[100::50]))
+ys = ys[:5];
 ys[0] = 1e-14
 print("ys =", ys)
 
@@ -75,7 +75,7 @@ print(ds)
 print("Consolidating data...")
 
 for t, in reader:
-    display = reader.show(key_arrays[0])
+    #  display = reader.show(key_arrays[0])
     for y in ys:
         print("t =", t, "y =", y, end=" ")
         s = reader.get_slice(y=y)
