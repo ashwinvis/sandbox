@@ -4,3 +4,6 @@
 [submodule "interface/mma"]
 	path = interface/mma
 	url = https://github.com/coderefinery/mma
+[submodule "interface/pycallgrind"]
+	path = interface/pycallgrind
+	url = https://github.com/jcrist/pycallgrind
