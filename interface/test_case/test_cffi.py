@@ -16,11 +16,6 @@ def pet_cat(mode, lib, ffi):
     print("Initializing cat", mode)
     lib.init_cat()
 
-    # FIXME: If API mode is used it cannot be run in the same process which
-    #        builds it? Leads to segfault. OK if imported later
-    #
-    # FIXME: arguments are not passed into Fortran
-
     float_ptr = ffi.new("double *", 24.0)
 
     print("cset_meow")
