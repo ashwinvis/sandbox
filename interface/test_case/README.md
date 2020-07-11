@@ -6,3 +6,8 @@ The objective is to:
 - [x] Clean up symbol names: no underscores (not portable?) / use
     `iso_c_binding`
 - [ ] Call functions and subroutines from python: run `pytest -s` (WIP)
+
+## Typing reference
+
+- https://northstar-www.dartmouth.edu/doc/solaris-forte/manuals/fortran/prog_guide/11_cfort.html
+- https://cffi.readthedocs.io/en/latest/ref.html#conversions

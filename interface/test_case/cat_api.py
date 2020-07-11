@@ -6,7 +6,7 @@ def build():
     ffi = FFI()
 
     with open("libcat.h") as header:
-        func_prototypes = header.read().strip()
+        func_prototypes = header.read()
         ffi.cdef(func_prototypes)
 
     # os.environ["LD_LIBRARY_PATH"] = os.getcwd()

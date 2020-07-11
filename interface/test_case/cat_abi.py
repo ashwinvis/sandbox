@@ -5,7 +5,7 @@ def load():
     ffi = FFI()
 
     with open("libcat.h") as header:
-        ffi.cdef(header.read().strip())
+        ffi.cdef(header.read())
 
     lib = ffi.dlopen("libcat.so")
     return lib, ffi
