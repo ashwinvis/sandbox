@@ -13,14 +13,15 @@ def pet_cat(mode, lib):
     print("Initializing cat", mode)
     lib.init_cat()
 
-    if mode == "ABI":
-        # FIXME: it does not work in API mode
-        # FIXME: arguments are not passed into Fortran
-        print("cset_meow")
-        lib.cset_meow(24.0)
+    # FIXME: If API mode is used it cannot be run in the same process which
+    #        builds it? Leads to segfault. OK if imported later
+    #
+    # FIXME: arguments are not passed into Fortran
+    print("cset_meow")
+    lib.cset_meow(24.0)
 
-        print("set_meow")
-        lib.set_meow(8.0)
+    print("set_meow")
+    lib.set_meow(8.0)
 
     print("get_cat")
     cat = lib.get_cat()
