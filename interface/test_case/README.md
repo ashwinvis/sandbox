@@ -7,6 +7,11 @@ The objective is to:
     `iso_c_binding`
 - [ ] Call functions and subroutines from python: run `pytest -s` (WIP)
 
+
+# Generating C headers
+
+- https://gcc.gnu.org/onlinedocs/gfortran/Interoperability-Options.html
+
 ## Typing reference
 
 - https://northstar-www.dartmouth.edu/doc/solaris-forte/manuals/fortran/prog_guide/11_cfort.html
