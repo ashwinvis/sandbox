@@ -1,0 +1,4 @@
+       real cat(3, 3)
+       common /meow/ cat
+
+c vim: set ft=fortran
