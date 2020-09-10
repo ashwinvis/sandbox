@@ -1,0 +1,65 @@
+[GENERAL]
+stopAt = numSteps
+numSteps = 10000000
+variableDt = yes
+targetCfl = 0.4
+writeControl = timeStep
+writeInterval = 20000
+filtering = hpfrt
+filterCutoffRatio = 0.75
+filterWeight = 0.05
+userParam03 = 5.0
+userParam04 = -0.00014
+userParam05 = 640
+userParam06 = 1500
+userParam07 = 640
+endTime = 25.0
+writeDoublePrecision = yes
+dealiasing = yes
+timeStepper = BDF2
+extrapolation = standard
+optLevel = 2
+logLevel = 2
+
+[PROBLEMTYPE]
+equation = incompNS
+stressFormulation = yes
+variableProperties = yes
+
+[PRESSURE]
+residualTol = 1e-05
+residualProj = yes
+preconditioner = semg_xxt
+
+[VELOCITY]
+residualTol = 1e-8
+density = 1
+viscosity = -1e10
+residualProj = no
+advection = yes
+
+[_RUNPAR]
+parfWrite = no
+parfName = outparfile
+
+[_MONITOR]
+logLevel = 4
+wallTime = 7-00:00:00
+
+[_CHKPOINT]
+readChkpt = no
+chkpFnumber = 1
+chkpInterval = 10000
+
+[_STAT]
+avStep = 15
+ioStep = 10000
+
+[_WMLES]
+bcTempFilt = yes
+bcZIndex = 1
+bcZ0 = 0.1
+sgsC0 = 0.15
+sgsDeltaMax = yes
+sgsNpow = 0.5
+
