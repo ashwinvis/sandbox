@@ -47,10 +47,13 @@ $(OBJDIR)/math_tools.o        :toolbox/math_tools.f
 libnek5000.so                 :objdir $(NOBJS) usrfile
 	$(FC) -shared $(NOBJS) $(CASEDIR)/${CASENAME}.o -lc $(USR_LFLAGS) -o $@
 
-ffi: libnek5000.so
-	# python -c 'from api import *; build()'
-	python api.py
+ffi: setup_ffi.py libnek5000.so
+	python $<
+
+cython: setup_cy.py nek5000_cy.pyx libnek5000.so
+	python $< build_ext --inplace
 
 cleanso:
-	rm -f *.so
-	rm -f *_ffi.{c,o}
+	rm -f nek5000*.so
+	rm -f *_{cy,ffi}.{c,o}
+	rm -rf build

@@ -1,0 +1,9 @@
+NEK_SOURCE_ROOT=/home/avmo/src/snek5000/snek5000-abl/lib/Nek5000
+FC=mpif77
+FFLAGS=-fPIC -march=native -mcmodel=medium -std=legacy -Itoolbox
+FCPP=-cpp
+FR8=-fdefault-real-8 -fdefault-double-8
+FF77=-std=legacy
+CC=mpicc
+CFLAGS=-fPIC -march=native
+PPLIST= MPI UNDERSCORE GLOBAL_LONG_LONG TIMER

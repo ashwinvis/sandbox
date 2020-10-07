@@ -9,7 +9,7 @@ def build():
             func_prototypes = header.read()
             ffi.cdef(func_prototypes)
 
-    MPI = not False
+    MPI = False
 
     # os.environ["LD_LIBRARY_PATH"] = os.getcwd()
 

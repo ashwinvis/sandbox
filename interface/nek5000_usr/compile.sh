@@ -16,7 +16,7 @@ function error_quit {
 export CASE="phill"
 export NEK_SOURCE_ROOT=${NEK_SOURCE_ROOT:"../../Nek5000"}
 
-export MPI=0
+export MPI=1
 if [ $MPI -eq 0 ]; then
   export FC=gfortran
   export CC=gcc

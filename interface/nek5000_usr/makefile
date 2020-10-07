@@ -1,4 +1,4 @@
-### makefile automatically created by makenek 09/10/2020 23:14:12 ###
+### makefile automatically created by makenek 10/07/2020 14:15:56 ###
 BINNAME=nek5000
 LIBNAME=libnek5000.a
 CASENAME:=phill
@@ -8,19 +8,19 @@ SCMT=/home/avmo/src/snek5000/snek5000-abl/lib/Nek5000/core/cmt
 OPT_INCDIR=./
 OBJDIR=obj
 
-FC=gfortran
-CC=gcc
+FC=mpif77
+CC=mpicc
 FFLAGS+=-cpp -fdefault-real-8 -fdefault-double-8 -std=legacy -fPIC -march=native -mcmodel=medium -std=legacy -Itoolbox
 CFLAGS+=-fPIC -march=native
 LDFLAGS+= -Wl,--allow-multiple-definition
 
 PPPO=
-PPS= NOMPIIO UNDERSCORE GLOBAL_LONG_LONG TIMER
+PPS= MPI UNDERSCORE GLOBAL_LONG_LONG TIMER
 
 USR=frame.o mntrlog_block.o mntrlog.o mntrtmr_block.o mntrtmr.o rprm_block.o rprm.o io_tools_block.o io_tools.o chkpoint.o chkpt_mstp.o map2D.o stat.o stat_IO.o math_tools.o
 USR_LFLAGS= -L/home/avmo/src/snek5000/snek5000-abl/lib/Nek5000/3rd_party/blasLapack -lblasLapack -L/home/avmo/src/snek5000/snek5000-abl/lib/Nek5000/3rd_party/gslib/lib -lgs
 
-MPI=0
+MPI=1
 CMT=0
 DPROCMAP=0
 VISIT=0
