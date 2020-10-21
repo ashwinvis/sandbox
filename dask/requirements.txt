@@ -1,0 +1,6 @@
+pymech
+mpi4py
+dask[array,distributed]
+dask-mpi
+bokeh
+jupyter-server-proxy
