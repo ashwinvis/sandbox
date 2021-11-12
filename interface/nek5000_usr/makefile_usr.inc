@@ -53,6 +53,12 @@ ffi: setup_ffi.py libnek5000.so
 cython: setup_cy.py nek5000_cy.pyx libnek5000.so
 	python $< build_ext --inplace
 
+pybind: nek5000_pybind.cpp
+	mpicxx -Wall -c $<
+	gcc -Wall -fPIC -c add.c
+	gcc -shared add.o -o libadd.so
+	mpicxx -Wall -L. -lnek5000 -ladd nek5000_pybind.o -o nek5000_$@
+
 cleanso:
 	rm -f nek5000*.so
 	rm -f *_{cy,ffi}.{c,o}

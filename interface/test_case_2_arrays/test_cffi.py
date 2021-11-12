@@ -10,7 +10,7 @@ def setup():
 
 
 def teardown():
-    # os.system('make clean')
+    os.system('make clean')
     pass
 
 
@@ -32,6 +32,9 @@ def pet_cat(mode, lib, ffi):
     print("Initializing cat", mode)
     lib.init_cat()
 
+    cat_ptr = ffi.new("double *")
+    lib.get_cat(cat_ptr)
+
     # https://stackoverflow.com/a/16290289
     float_array = np.eye(3) * 33
     float_ptr = ffi.cast("double *", float_array.ctypes.data)
@@ -45,7 +48,7 @@ def pet_cat(mode, lib, ffi):
     print("get_cat")
     #  cat = np.empty((3, 3), dtype=np.float64)
     #  print("Python says cat =", cat)
-    cat_ptr = ffi.new("double *")
+    # cat_ptr = ffi.new("double *")
     lib.get_cat(cat_ptr)
 
     cat = asarray(ffi, cat_ptr, 9)
