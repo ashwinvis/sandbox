@@ -1,0 +1,32 @@
+/home/avmo/src/snek5000/snek5000/src/snek5000/../../lib/Nek5000/core/subs1.f:1630:19:
+
+ 1219 |       BCNEU2 = (ldim) * GLSUM(RMULT,NTOT1)
+      |                              2
+......
+ 1630 |       usum = glsum(usum,1)  ! sum across processors
+      |                   1
+Warning: Rank mismatch between actual argument at (1) and actual argument at (2) (rank-1 and scalar)
+/home/avmo/src/snek5000/snek5000/src/snek5000/../../lib/Nek5000/core/subs1.f:1631:19:
+
+ 1219 |       BCNEU2 = (ldim) * GLSUM(RMULT,NTOT1)
+      |                              2
+......
+ 1631 |       asum = glsum(asum,1)
+      |                   1
+Warning: Rank mismatch between actual argument at (1) and actual argument at (2) (rank-1 and scalar)
+/home/runner/work/snek5000/snek5000/lib/Nek5000/core/navier2.f:216:42:
+
+  212 |          do i=1,lxyz
+      |                                                                        2
+......
+  216 |      $                       + us(i)*sym1(i,1,1,e) )
+      |                                          1
+Warning: Array reference at (1) out of bounds (81 > 9) in loop beginning at (2)
+/home/avmo/.local/scratch/tmp/canonical_run_3x6x3_V2pix2pix2pi_2021-11-12_00-21-02/canonical.f:21:23:
+
+    4 |       subroutine useric(ix,iy,iz,ieg)
+      |                       2
+......
+   21 |       subroutine useric(ix,iy,iz,ieg)
+      |                       1
+Error: Global name 'useric' at (1) is already being used as a SUBROUTINE at (2)

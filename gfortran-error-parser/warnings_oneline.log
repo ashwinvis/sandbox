@@ -1,0 +1,45 @@
+/home/runner/work/snek5000/snek5000/lib/Nek5000/core/math.f:1209:28:
+
+ 1209 |       subroutine chswapr(b,L,ind,n,temp)
+      |                            1
+Warning: Unused dummy argument ‘l’ at (1) [-Wunused-dummy-argument]
+SIZE:12:28:
+
+   12 |       integer lelx,lely,lelz,mxprev,lgmres,lorder,lhis
+      |                            1
+Warning: Unused variable ‘lelz’ declared at (1) [-Wunused-variable]
+/home/runner/work/snek5000/snek5000/lib/Nek5000/core/connect1.f:1681:20:
+
+ 1681 |                jg = efc(i)+0.1
+      |                    1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(4) at (1) [-Wconversion]
+/home/runner/work/snek5000/snek5000/lib/Nek5000/core/induct.f:315:32:
+
+  315 |       parameter(nset = 1 + lbelv/lelv)
+      |                                1
+Warning: Integer division truncated to constant ‘0’ at (1) [-Winteger-division]
+/home/runner/work/snek5000/snek5000/lib/Nek5000/core/induct.f:362:31:
+
+  362 |       if (ifmhd)  call chkptol ! to avoid repetition
+      |                               1
+Warning: Nonconforming tab character at (1) [-Wtabs]
+/home/runner/work/snek5000/snek5000/lib/Nek5000/core/fast3d.f:495:5:
+
+  495 |     1       format(a6,i5,1p3e12.4)
+      |     1
+Warning: Label 1 at (1) defined but not used [-Wunused-label]
+/home/runner/work/snek5000/snek5000/lib/Nek5000/core/fast3d.f:1585:27:
+
+ 1585 |             llr(e) = l(1,2,2,e)-lmr(e)
+      |                           1
+Warning: Array reference at (1) is out of bounds (2 > 1) in dimension 3
+/home/avmo/src/snek5000/snek5000/src/snek5000/../../lib/Nek5000/core/subs1.f:1623:38:
+
+ 1623 |             call fcsum2(usum_f,asum_f,u,e,f)
+      |                                      1
+Warning: Actual argument contains too few elements for dummy argument 'x' (1/216) at (1)
+/home/avmo/src/snek5000/snek5000/src/snek5000/../../lib/Nek5000/core/subs1.f:1799:20:
+
+ 1799 |       call axhmsf  (a1,a2,a3,p1,p2,p3,h1,h2,matmod)
+      |                    1
+Warning: Actual argument contains too few elements for dummy argument 'au1' (1/216) at (1)

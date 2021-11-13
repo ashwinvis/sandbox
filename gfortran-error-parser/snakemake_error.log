@@ -1,0 +1,13 @@
+[Fri Nov 12 00:21:12 2021]
+Error in rule compile:
+    jobid: 5
+    output: nek5000
+    shell:
+
+        make -j nek5000 | tee -a build.log
+
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: /home/avmo/src/snek5000/snek5000/lib/Nek5000/.snakemake/log/2021-11-12T002102.256518.snakemake.log
