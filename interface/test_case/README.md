@@ -14,5 +14,5 @@ The objective is to:
 
 ## Typing reference
 
-- https://northstar-www.dartmouth.edu/doc/solaris-forte/manuals/fortran/prog_guide/11_cfort.html
+- https://web.archive.org/web/20190720121337/http://northstar-www.dartmouth.edu/doc/solaris-forte/manuals/fortran/prog_guide/11_cfort.html
 - https://cffi.readthedocs.io/en/latest/ref.html#conversions

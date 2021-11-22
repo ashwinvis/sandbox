@@ -11,12 +11,13 @@ def datadir():
 # TODO: Pretty print with rich.traceback.Traceback + rich.console.Console.print
 
 def print_match(match):
-    print(match['level'], end=": ")
-    print(
-        f"{match['file']}:{match['line_nb']}:{match['col']}\n  ",
-        match.group(match.lastindex), "\n",
-        match['source']
-    )
+    if match['level'] == "Error":
+        print(match['level'], end=": ")
+        print(
+            f"{match['file']}:{match['line_nb']}:{match['col']}\n  ",
+            match.group(match.lastindex), "\n",
+            match['source']
+        )
 
 
 
@@ -27,5 +28,5 @@ def test_gfortran(datadir, log_file):
     for match in exp.finditer(log):
         print_match(match)
 
-    print(match[0])
+    #  print(match[0])
     assert log.endswith(str(match.group(0)) + "\n")
